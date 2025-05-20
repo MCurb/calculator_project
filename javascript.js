@@ -16,6 +16,8 @@ let secondNum = 0;
 let operator = 0;
 
 function operate(firstNum, secondNum, operator) {
+    firstNum = +firstNum;
+    secondNum = +secondNum;
     if (operator === "divide") {
         displayContent.textContent = divide(firstNum, secondNum);
     } else if (operator === "multiply") {
@@ -42,7 +44,6 @@ container.addEventListener("click", (e) => {
     divideBtn.setAttribute("style", "background: blue");
     //errase the text content and wait for the second number input
     displayContent.textContent = "";
-    // console.log(firstNum);
   } else if (e.target.matches(".multiply-operator")) {
     firstNum = displayContent.textContent;
     operator = "multiply";
