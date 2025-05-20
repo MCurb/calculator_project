@@ -19,13 +19,25 @@ function operate(firstNum, secondNum, operator) {
     firstNum = +firstNum;
     secondNum = +secondNum;
     if (operator === "divide") {
-        displayContent.textContent = divide(firstNum, secondNum);
+        let result = divide(firstNum, secondNum);
+        //Convert the function result to string and test if it's larger than 10 characters
+        if (result.toString().length > 10) {
+            //if result > than 10, return a value with maximum 2 numbers after the point
+            displayContent.textContent = result.toFixed(2)
+        } else {displayContent.textContent = result;} 
     } else if (operator === "multiply") {
-        displayContent.textContent = multiply(firstNum, secondNum);
+        let result = multiply(firstNum, secondNum);
+        if (result.toString().length > 10) {
+            //if result > than 10, display the value in scientific notation
+            displayContent.textContent = result.toExponential(4)
+        } else {displayContent.textContent = result;}
     } else if (operator === "add") {
-        displayContent.textContent = add(firstNum, secondNum); 
+        let result = add(firstNum, secondNum);
+        if (result.toString().length > 10) {
+            displayContent.textContent = result.toExponential(4)
+        } else {displayContent.textContent = result;} 
     } else if (operator === "subtract") {
-        displayContent.textContent = subtract(firstNum, secondNum); 
+        displayContent.textContent = subtract(firstNum, secondNum);
     }
 }
 
@@ -33,10 +45,13 @@ const container = document.querySelector(".container");
 const displayContent = document.querySelector(".display");
 const divideBtn = document.querySelector(".divide-operator");
 
-container.addEventListener("click", (e) => {
+function handelClick(e) {
   if (e.target.matches(".number")) {
-    //every time a number button is pressed it will update the display content text
-    displayContent.textContent = displayContent.textContent + e.target.textContent;
+    //every time a number button is pressed it will update the display content text if the are not more than 10 numbers displayed
+    if(displayContent.textContent.length >= 10) {
+        displayContent.removeEventListener("click", handelClick)
+    } else {displayContent.textContent = displayContent.textContent + e.target.textContent;}
+    
   } else if (e.target.matches(".divide-operator")) {
     //update the firstNum and operator variables
     firstNum = displayContent.textContent;
@@ -67,11 +82,5 @@ container.addEventListener("click", (e) => {
     secondNum = 0;
     operator = 0;
   }
-  
-  
-  
-  
-  
-  
-  
-});
+}
+container.addEventListener("click", handelClick);
