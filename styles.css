@@ -1,8 +1,13 @@
+.body {
+    display: flex;
+    flex-direction: column;
+}
 .container {
     display: flex;
     flex-direction: column;
     background-color: blue;
     max-width: fit-content;
+    margin: auto;
 }
 
 .display {
