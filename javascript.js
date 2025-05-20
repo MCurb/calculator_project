@@ -19,12 +19,17 @@ function operate(firstNum, secondNum, operator) {
     firstNum = +firstNum;
     secondNum = +secondNum;
     if (operator === "divide") {
-        let result = divide(firstNum, secondNum);
+        //First check if the second number is not 0
+        if (secondNum === 0) {
+            displayContent.textContent = "Fuck you bitch"
+        } else {
+            let result = divide(firstNum, secondNum);
         //Convert the function result to string and test if it's larger than 10 characters
         if (result.toString().length > 10) {
             //if result > than 10, return a value with maximum 2 numbers after the point
             displayContent.textContent = result.toFixed(2)
-        } else {displayContent.textContent = result;} 
+        } else {displayContent.textContent = result;}}
+         
     } else if (operator === "multiply") {
         let result = multiply(firstNum, secondNum);
         if (result.toString().length > 10) {
@@ -47,7 +52,7 @@ const divideBtn = document.querySelector(".divide-operator");
 
 function handelClick(e) {
   if (e.target.matches(".number")) {
-    //every time a number button is pressed it will update the display content text if the are not more than 10 numbers displayed
+    //every time a number button is pressed it will update the display content text if the are not more than 10 numbers
     if(displayContent.textContent.length >= 10) {
         displayContent.removeEventListener("click", handelClick)
     } else {displayContent.textContent = displayContent.textContent + e.target.textContent;}
