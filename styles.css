@@ -1,0 +1,20 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    background-color: blue;
+    max-width: fit-content;
+}
+
+.display {
+    background-color: red;
+}
+
+.buttons-div {
+    display: flex;
+    flex-direction: column;
+}
+
+.first-row, .sencond-row, .third-row, .fourth-row {
+    display: flex;
+    justify-content: space-evenly;
+}
