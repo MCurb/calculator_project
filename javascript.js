@@ -51,8 +51,10 @@ function operate(firstOperand, secondOperand, activeOperator) {
       break;
 
     case "subtract":
-      display.textContent = 
-      subtract(firstOperand, secondOperand);
+      result = subtract(firstOperand, secondOperand);
+
+      display.textContent =
+        result.toString().length > 10 ? result.toExponential(4) : result;
       break;
 
     default:
