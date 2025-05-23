@@ -24,7 +24,6 @@ function operate(firstOperand, secondOperand, activeOperator) {
 
   //Check what's the active operator and call the related function
   switch (activeOperator) {
-
     case "divide":
       if (secondOperand === 0) {
         display.textContent = "lmao";
@@ -84,9 +83,8 @@ container.addEventListener("click", handleClick);
 
 //Check what was the clicked button inside container
 function handleClick(e) {
-
   if (e.target.matches(".number-btn")) {
-    
+
     if (justCalculated === true) {
       display.textContent = "";
       display.textContent = e.target.textContent;
@@ -95,11 +93,12 @@ function handleClick(e) {
       if (display.textContent.length >= 10) {
         display.removeEventListener("click", handleClick);
       } else {
+        
         display.textContent += e.target.textContent;
       }
     }
 
-  } else if (e.target.matches(".divide-operator")) {
+  } else if (e.target.matches(".divide")) {
 
     if (activeOperator != "") {
       handleSecondOperation();
@@ -110,7 +109,7 @@ function handleClick(e) {
       justCalculated = true;
     }
 
-  } else if (e.target.matches(".multiply-operator")) {
+  } else if (e.target.matches(".multiply")) {
 
     if (activeOperator != "") {
       handleSecondOperation();
@@ -121,7 +120,7 @@ function handleClick(e) {
       justCalculated = true;
     }
 
-  } else if (e.target.matches(".add-operator")) {
+  } else if (e.target.matches(".add")) {
 
     if (activeOperator != "") {
       handleSecondOperation();
@@ -132,7 +131,7 @@ function handleClick(e) {
       justCalculated = true;
     }
 
-  } else if (e.target.matches(".subtract-operator")) {
+  } else if (e.target.matches(".subtract")) {
 
     if (activeOperator != "") {
       handleSecondOperation();
@@ -143,12 +142,11 @@ function handleClick(e) {
       justCalculated = true;
     }
 
-  } else if (e.target.matches(".equal-operator")) {
+  } else if (e.target.matches(".equal")) {
 
     secondOperand = display.textContent;
     operate(firstOperand, secondOperand, activeOperator);
     justCalculated = true;
-
 
   } else if (e.target.matches(".all-clear")) {
 
