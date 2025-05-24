@@ -85,7 +85,7 @@ container.addEventListener("click", handleClick);
 function handleClick(e) {
   if (e.target.matches(".number-btn")) {
 
-    if (justCalculated === true) {
+    if (display.textContent === "0" || justCalculated === true) {
       display.textContent = "";
       display.textContent = e.target.textContent;
       justCalculated = false;
@@ -93,7 +93,6 @@ function handleClick(e) {
       if (display.textContent.length >= 10) {
         display.removeEventListener("click", handleClick);
       } else {
-        
         display.textContent += e.target.textContent;
       }
     }
@@ -155,5 +154,6 @@ function handleClick(e) {
     secondOperand = "";
     activeOperator = "";
     result = "";
+    justCalculated = true;
   }
 }
