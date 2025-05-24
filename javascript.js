@@ -31,7 +31,7 @@ function operate(firstOperand, secondOperand, activeOperator) {
         result = divide(firstOperand, secondOperand);
         //If result has > 10 num reduce it to just 9 after 0, if not return result
         display.textContent =
-          result.toString().length > 10 ? result.toFixed(6) : result;
+          result.toString().length > 10 ? result.toExponential(4) : result;
       }
       break;
 
@@ -83,9 +83,10 @@ container.addEventListener("click", handleClick);
 
 //Check what was the clicked button inside container
 function handleClick(e) {
+
   if (e.target.matches(".number-btn")) {
 
-    if (display.textContent === "0" || justCalculated === true) {
+    if (display.textContent === "0" || justCalculated) {
       display.textContent = "";
       display.textContent = e.target.textContent;
       justCalculated = false;
@@ -155,5 +156,11 @@ function handleClick(e) {
     activeOperator = "";
     result = "";
     justCalculated = true;
+
+  } else if (e.target.matches(".dot")) {
+    display.textContent += e.target.textContent;
+
+  } else if (e.target.matches(".erase")) {
+    display.textContent = display.textContent.slice(0, -1)
   }
 }

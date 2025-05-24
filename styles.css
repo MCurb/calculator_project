@@ -5,6 +5,7 @@ body {
     justify-content: center;
     align-items: center;
     gap: 16px;
+    font-family: 'Outfit', 'Times New Roman', Times, serif;
 }
 
  /* Containers */
@@ -58,6 +59,7 @@ button {
     background-color: #505050;
     color: white;
     font-size: 28px;
+    font-family: 'Outfit';
     transition: font-size 0.1s ease;
 }
 
@@ -93,6 +95,7 @@ button:active {
 
 .operator {
     background-color: #fe9501;
+    font-weight: 600;
 }
 
 /* Footer */
