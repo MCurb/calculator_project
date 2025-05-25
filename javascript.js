@@ -83,84 +83,92 @@ container.addEventListener("click", handleClick);
 
 //Check what was the clicked button inside container
 function handleClick(e) {
+  const clickedButton = e.target.closest("button");
+  if (!clickedButton) return;
 
-  if (e.target.matches(".number-btn")) {
+  const action = clickedButton.dataset.action;
+  const value = clickedButton.dataset.value;
 
-    if (display.textContent === "0" || justCalculated) {
-      display.textContent = "";
-      display.textContent = e.target.textContent;
-      justCalculated = false;
-    } else {
-      if (display.textContent.length >= 10) {
-        display.removeEventListener("click", handleClick);
+  switch (action) {
+    case "number":
+      if (display.textContent === "0" || justCalculated) {
+        display.textContent = "";
+        display.textContent = value;
+        justCalculated = false;
       } else {
-        display.textContent += e.target.textContent;
+        if (display.textContent.length >= 10) {
+          display.removeEventListener("click", handleClick);
+        } else {
+          display.textContent += value;
+        }
       }
-    }
+      break;
 
-  } else if (e.target.matches(".divide")) {
+    case "multiply":
+      if (activeOperator != "") {
+        handleSecondOperation();
+        activeOperator = action;
+      } else {
+        firstOperand = display.textContent;
+        activeOperator = action;
+        justCalculated = true;
+      }
+      break;
 
-    if (activeOperator != "") {
-      handleSecondOperation();
-      activeOperator = "divide";
-    } else {
-      firstOperand = display.textContent;
-      activeOperator = "divide";
+    case "divide":
+      if (activeOperator != "") {
+        handleSecondOperation();
+        activeOperator = "divide";
+      } else {
+        firstOperand = display.textContent;
+        activeOperator = "divide";
+        justCalculated = true;
+      }
+      break;
+
+    case "add":
+      if (activeOperator != "") {
+        handleSecondOperation();
+        activeOperator = action;
+      } else {
+        firstOperand = display.textContent;
+        activeOperator = action;
+        justCalculated = true;
+      }
+      break;
+
+    case "subtract":
+      if (activeOperator != "") {
+        handleSecondOperation();
+        activeOperator = action;
+      } else {
+        firstOperand = display.textContent;
+        activeOperator = action;
+        justCalculated = true;
+      }
+      break;
+
+    case "equal":
+      secondOperand = display.textContent;
+      operate(firstOperand, secondOperand, activeOperator);
       justCalculated = true;
-    }
+      break;
 
-  } else if (e.target.matches(".multiply")) {
+    case "dot":
+      display.textContent += value;
+      break;
 
-    if (activeOperator != "") {
-      handleSecondOperation();
-      activeOperator = "multiply";
-    } else {
-      firstOperand = display.textContent;
-      activeOperator = "multiply";
+    case "erase":
+      display.textContent = display.textContent.slice(0, -1);
+      break;
+
+    case "all-clear":
+      display.textContent = 0;
+      firstOperand = "";
+      secondOperand = "";
+      activeOperator = "";
+      result = "";
       justCalculated = true;
-    }
-
-  } else if (e.target.matches(".add")) {
-
-    if (activeOperator != "") {
-      handleSecondOperation();
-      activeOperator = "add";
-    } else {
-      firstOperand = display.textContent;
-      activeOperator = "add";
-      justCalculated = true;
-    }
-
-  } else if (e.target.matches(".subtract")) {
-
-    if (activeOperator != "") {
-      handleSecondOperation();
-      activeOperator = "subtract";
-    } else {
-      firstOperand = display.textContent;
-      activeOperator = "subtract";
-      justCalculated = true;
-    }
-
-  } else if (e.target.matches(".equal")) {
-
-    secondOperand = display.textContent;
-    operate(firstOperand, secondOperand, activeOperator);
-    justCalculated = true;
-
-  } else if (e.target.matches(".all-clear")) {
-
-    display.textContent = 0;
-    firstOperand = "";
-    secondOperand = "";
-    activeOperator = "";
-    result = "";
-    justCalculated = true;
-
-  } else if (e.target.matches(".dot")) {
-    display.textContent += e.target.textContent;
-
-  } else if (e.target.matches(".erase")) {
-    display.textContent = display.textContent.slice(0, -1)
+      break;
   }
 }

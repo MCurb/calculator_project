@@ -18,9 +18,9 @@
       <div class="buttons-div">
         <!-- Row Containers -->
         <div class="first-row">
-          <button class="all-clear">AC</button>
+          <button data-action="all-clear" class="all-clear">AC</button>
           <!-- Erase SVG Btn -->
-          <button class="erase">
+          <button data-action="erase" class="erase">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -36,31 +36,31 @@
               />
             </svg>
           </button>
-          <button class="percent">%</button>
-          <button class="divide operator">÷</button>
+          <button data-action="percent" class="percent">%</button>
+          <button data-action="divide" class="divide operator">÷</button>
         </div>
         <div class="second-row">
-          <button class="number-btn">7</button>
-          <button class="number-btn">8</button>
-          <button class="number-btn">9</button>
-          <button class="multiply operator">⨯</button>
+          <button data-action="number" data-value="7" class="number-btn">7</button>
+          <button data-action="number" data-value="8" class="number-btn">8</button>
+          <button data-action="number" data-value="9" class="number-btn">9</button>
+          <button data-action="multiply" class="multiply operator">⨯</button>
         </div>
         <div class="third-row">
-          <button class="number-btn">4</button>
-          <button class="number-btn">5</button>
-          <button class="number-btn">6</button>
-          <button class="subtract operator">–</button>
+          <button data-action="number" data-value="4" class="number-btn">4</button>
+          <button data-action="number" data-value="5" class="number-btn">5</button>
+          <button data-action="number" data-value="6" class="number-btn">6</button>
+          <button data-action="subtract" class="subtract operator">–</button>
         </div>
         <div class="fourth-row">
-          <button class="number-btn">1</button>
-          <button class="number-btn">2</button>
-          <button class="number-btn">3</button>
-          <button class="add operator">+</button>
+          <button data-action="number" data-value="1" class="number-btn">1</button>
+          <button data-action="number" data-value="2" class="number-btn">2</button>
+          <button data-action="number" data-value="3" class="number-btn">3</button>
+          <button data-action="add" class="add operator">+</button>
         </div>
         <div class="fifth-row">
-          <button class="number-btn zeroBtn">0</button>
-          <button class="dot">.</button>
-          <button class="equal operator">=</button>
+          <button data-action="number" data-value="0" class="number-btn zeroBtn">0</button>
+          <button data-action="dot" data-value="." class="dot">.</button>
+          <button data-action="equal" class="equal operator">=</button>
         </div>
       </div>
     </div>
