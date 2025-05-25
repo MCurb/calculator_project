@@ -1,3 +1,4 @@
+//Operator functions
 function divide(num1, num2) {
   return num1 / num2;
 }
@@ -17,6 +18,8 @@ let activeOperator = 0;
 let result = 0;
 let justCalculated = false;
 
+//Operate function: this will take the variables and call the necessary operator function
+
 function operate(firstOperand, secondOperand, activeOperator) {
   //Convert string values into numbers
   firstOperand = +firstOperand;
@@ -29,7 +32,7 @@ function operate(firstOperand, secondOperand, activeOperator) {
         display.textContent = "lmao";
       } else {
         result = divide(firstOperand, secondOperand);
-        //If result has > 10 num reduce it to just 9 after 0, if not return result
+        //If result has 10+ num, convert to scientific notation, if not return result
         display.textContent =
           result.toString().length > 10 ? result.toExponential(4) : result;
       }
@@ -71,7 +74,7 @@ function clearAll() {
 const container = document.querySelector(".container");
 const display = document.querySelector(".display");
 
-//Take the second operand from the screen, perform the calculation and make the result the first operand for the next calculation with the selected operator, also leave a flag that a calculation was performed.
+//Take second operand from display, perform calculation, make result the first operand for next calculation with selected operator, also leave a flag that a calculation was performed.
 function handleSecondOperation() {
   secondOperand = display.textContent;
   operate(firstOperand, secondOperand, activeOperator);
@@ -81,21 +84,25 @@ function handleSecondOperation() {
 
 container.addEventListener("click", handleClick);
 
-//Check what was the clicked button inside container
+//Check what was the clicked button inside container and do something about it
 function handleClick(e) {
+  //Find the closest button to the clicked element
   const clickedButton = e.target.closest("button");
   if (!clickedButton) return;
 
+  //Use previously set data-action and data-value in HTML
   const action = clickedButton.dataset.action;
   const value = clickedButton.dataset.value;
 
   switch (action) {
     case "number":
+      //Clean display and write new input after calculation
       if (display.textContent === "0" || justCalculated) {
         display.textContent = "";
         display.textContent = value;
         justCalculated = false;
       } else {
+        //Stop listening if 10 numbers on display
         if (display.textContent.length >= 10) {
           display.removeEventListener("click", handleClick);
         } else {
@@ -105,6 +112,7 @@ function handleClick(e) {
       break;
 
     case "multiply":
+      // If there's a pending operation and the user enters a new number followed by another operator, calculate the result. Else just activate the operator and wait for second operand.
       if (activeOperator != "") {
         handleSecondOperation();
         activeOperator = action;
