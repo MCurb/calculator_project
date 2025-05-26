@@ -122,9 +122,11 @@ function handleClick(e) {
       if (activeOperator != "") {
         handleSecondOperation();
         activeOperator = action;
+        display.textContent += e.target.textContent;
       } else {
         firstOperand = display.textContent;
         activeOperator = action;
+        display.textContent += e.target.textContent;
         justCalculated = true;
       }
       break;
@@ -132,10 +134,12 @@ function handleClick(e) {
     case "divide":
       if (activeOperator != "") {
         handleSecondOperation();
-        activeOperator = "divide";
+        activeOperator = action;
+        display.textContent += e.target.textContent;
       } else {
         firstOperand = display.textContent;
-        activeOperator = "divide";
+        activeOperator = action;
+        display.textContent += e.target.textContent;
         justCalculated = true;
       }
       break;
@@ -144,9 +148,11 @@ function handleClick(e) {
       if (activeOperator != "") {
         handleSecondOperation();
         activeOperator = action;
+        display.textContent += e.target.textContent;
       } else {
         firstOperand = display.textContent;
         activeOperator = action;
+        display.textContent += e.target.textContent;
         justCalculated = true;
       }
       break;
@@ -155,9 +161,11 @@ function handleClick(e) {
       if (activeOperator != "") {
         handleSecondOperation();
         activeOperator = action;
+        display.textContent += e.target.textContent;
       } else {
         firstOperand = display.textContent;
         activeOperator = action;
+        display.textContent += e.target.textContent;
         justCalculated = true;
       }
       break;
@@ -170,7 +178,10 @@ function handleClick(e) {
       break;
 
     case "percent":
-     display.textContent = percent(display.textContent);
+     result = percent(display.textContent);
+
+      display.textContent =
+        result.toString().length > 10 ? result.toExponential(4) : result;
      break;
 
     case "dot":
