@@ -11,12 +11,16 @@ function add(num1, num2) {
 function subtract(num1, num2) {
   return num1 - num2;
 }
+function percent(num1) {
+ return Number(num1) / 100;
+}
 
 let firstOperand = 0;
 let secondOperand = 0;
 let activeOperator = 0;
 let result = 0;
 let justCalculated = false;
+let dotForbidden = false;
 
 //Operate function: this will take the variables and call the necessary operator function
 
@@ -73,6 +77,7 @@ function clearAll() {
 
 const container = document.querySelector(".container");
 const display = document.querySelector(".display");
+const addBtn = document.querySelector(".add")
 
 //Take second operand from display, perform calculation, make result the first operand for next calculation with selected operator, also leave a flag that a calculation was performed.
 function handleSecondOperation() {
@@ -100,6 +105,7 @@ function handleClick(e) {
       if (display.textContent === "0" || justCalculated) {
         display.textContent = "";
         display.textContent = value;
+        dotForbidden = false;
         justCalculated = false;
       } else {
         //Stop listening if 10 numbers on display
@@ -159,11 +165,20 @@ function handleClick(e) {
     case "equal":
       secondOperand = display.textContent;
       operate(firstOperand, secondOperand, activeOperator);
+      dotForbidden = true;
       justCalculated = true;
       break;
 
+    case "percent":
+     display.textContent = percent(display.textContent);
+     break;
+
     case "dot":
-      display.textContent += value;
+      if (display.textContent.includes(".") || dotForbidden) {
+        return
+      } else {
+        display.textContent += value;
+      }
       break;
 
     case "erase":
@@ -176,7 +191,8 @@ function handleClick(e) {
       secondOperand = "";
       activeOperator = "";
       result = "";
-      justCalculated = true;
+      justCalculated = false;
+      dotForbidden = false;
       break;
   }
 }
