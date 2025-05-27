@@ -12,7 +12,7 @@ function subtract(num1, num2) {
   return num1 - num2;
 }
 function percent(num1) {
- return Number(num1) / 100;
+  return Number(num1) / 100;
 }
 
 let firstOperand = 0;
@@ -77,7 +77,7 @@ function clearAll() {
 
 const container = document.querySelector(".container");
 const display = document.querySelector(".display");
-const addBtn = document.querySelector(".add")
+const addBtn = document.querySelector(".add");
 
 //Take second operand from display, perform calculation, make result the first operand for next calculation with selected operator, also leave a flag that a calculation was performed.
 function handleSecondOperation() {
@@ -119,7 +119,12 @@ function handleClick(e) {
 
     case "multiply":
       // If there's a pending operation and the user enters a new number followed by another operator, calculate the result. Else just activate the operator and wait for second operand.
-      if (activeOperator != "") {
+      if (justCalculated && activeOperator != "") {
+        display.textContent = display.textContent.slice(0, -1);
+        firstOperand = display.textContent;
+        activeOperator = action;
+        display.textContent += e.target.textContent;
+      } else if (activeOperator != "") {
         handleSecondOperation();
         activeOperator = action;
         display.textContent += e.target.textContent;
@@ -132,7 +137,12 @@ function handleClick(e) {
       break;
 
     case "divide":
-      if (activeOperator != "") {
+      if (justCalculated && activeOperator != "") {
+        display.textContent = display.textContent.slice(0, -1);
+        firstOperand = display.textContent;
+        activeOperator = action;
+        display.textContent += e.target.textContent;
+      } else if (activeOperator != "") {
         handleSecondOperation();
         activeOperator = action;
         display.textContent += e.target.textContent;
@@ -145,7 +155,12 @@ function handleClick(e) {
       break;
 
     case "add":
-      if (activeOperator != "") {
+      if (justCalculated && activeOperator != "") {
+        display.textContent = display.textContent.slice(0, -1);
+        firstOperand = display.textContent;
+        activeOperator = action;
+        display.textContent += e.target.textContent;
+      } else if (activeOperator != "") {
         handleSecondOperation();
         activeOperator = action;
         display.textContent += e.target.textContent;
@@ -158,7 +173,12 @@ function handleClick(e) {
       break;
 
     case "subtract":
-      if (activeOperator != "") {
+      if (justCalculated && activeOperator != "") {
+        display.textContent = display.textContent.slice(0, -1);
+        firstOperand = display.textContent;
+        activeOperator = action;
+        display.textContent += e.target.textContent;
+      } else if (activeOperator != "") {
         handleSecondOperation();
         activeOperator = action;
         display.textContent += e.target.textContent;
@@ -171,29 +191,45 @@ function handleClick(e) {
       break;
 
     case "equal":
-      secondOperand = display.textContent;
-      operate(firstOperand, secondOperand, activeOperator);
-      dotForbidden = true;
-      justCalculated = true;
+      if (justCalculated) {
+        return;
+      } else {
+        secondOperand = display.textContent;
+        operate(firstOperand, secondOperand, activeOperator);
+        justCalculated = true;
+      }
       break;
 
     case "percent":
-     result = percent(display.textContent);
+      if (justCalculated && activeOperator != "") {
+        return;
+      } else {
+        result = percent(display.textContent);
 
-      display.textContent =
-        result.toString().length > 10 ? result.toExponential(4) : result;
-     break;
+        display.textContent =
+          result.toString().length > 10 ? result.toExponential(4) : result;
+      }
+      break;
 
     case "dot":
-      if (display.textContent.includes(".") || dotForbidden) {
+      if (justCalculated && activeOperator != "") {
         return
+      } else if (display.textContent.includes(".") || dotForbidden) {
+        return;
       } else {
+        justCalculated = false;
         display.textContent += value;
       }
       break;
 
     case "erase":
-      display.textContent = display.textContent.slice(0, -1);
+      if (justCalculated) {
+        display.textContent = display.textContent.slice(0, -1);
+        activeOperator = "";
+        justCalculated = false;
+      } else {
+        display.textContent = display.textContent.slice(0, -1);
+      }
       break;
 
     case "all-clear":
