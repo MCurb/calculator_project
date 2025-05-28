@@ -32,43 +32,41 @@ function performOperation(firstOperand, secondOperand, activeOperator) {
 
   switch (activeOperator) {
     case "divide":
+      //Prevent division by zero
       if (secondOperand === 0) {
-        //Prevent division by zero
         display.textContent = "lmao";
       } else {
         result = divide(firstOperand, secondOperand);
 
         //Format result: use scientific notation if it's too long
-        display.textContent =
-          result.toString().length > 10 ? result.toExponential(4) : result;
+        display.textContent = checkDisplayOverflow(result);
       }
       break;
 
     case "multiply":
       result = multiply(firstOperand, secondOperand);
-
-      display.textContent =
-        result.toString().length > 10 ? result.toExponential(4) : result;
+      display.textContent = checkDisplayOverflow(result);
       break;
 
     case "add":
       result = add(firstOperand, secondOperand);
-
-      display.textContent =
-        result.toString().length > 10 ? result.toExponential(4) : result;
+      display.textContent = checkDisplayOverflow(result);
       break;
 
     case "subtract":
       result = subtract(firstOperand, secondOperand);
-
-      display.textContent =
-        result.toString().length > 10 ? result.toExponential(4) : result;
+      display.textContent = checkDisplayOverflow(result);
       break;
 
     default:
       return;
   }
   clearAll();
+}
+
+//Format result: use scientific notation if it's too long
+function checkDisplayOverflow(result) {
+  return result.toString().length > 10 ? result.toExponential(4) : result;
 }
 
 function clearAll() {
