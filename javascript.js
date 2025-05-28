@@ -19,10 +19,10 @@ function percent(num1) {
 const container = document.querySelector(".container");
 const display = document.querySelector(".display");
 
-let firstOperand = 0;
-let secondOperand = 0;
-let activeOperator = 0;
-let result = 0;
+let firstOperand;
+let secondOperand;
+let activeOperator;
+let result;
 let clearOnNextInput = false;
 
 function performOperation(firstOperand, secondOperand, activeOperator) {
@@ -152,7 +152,8 @@ function handleClicks(e) {
         handleFirstOperator(action, value);
       }
       break;
-      
+
+
     case "equal":
       //Prevent re-calculating if result is already displayed
       if (clearOnNextInput) {
