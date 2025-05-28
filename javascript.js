@@ -212,7 +212,7 @@ function handleClicks(e) {
       // 2) Or if there's already a dot on screen
       if (
         (clearOnNextInput && activeOperator !== "") ||
-        display.textContent.includes(".")
+        display.textContent.includes(".") || display.textContent === ""
       ) {
         return;
       } else {
