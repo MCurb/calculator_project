@@ -11,32 +11,34 @@ function add(num1, num2) {
 function subtract(num1, num2) {
   return num1 - num2;
 }
+//Gets called inside event handler function
 function percent(num1) {
   return Number(num1) / 100;
 }
+
+const container = document.querySelector(".container");
+const display = document.querySelector(".display");
 
 let firstOperand = 0;
 let secondOperand = 0;
 let activeOperator = 0;
 let result = 0;
-let justCalculated = false;
-let dotForbidden = false;
+let clearOnNextInput = false;
 
-//Operate function: this will take the variables and call the necessary operator function
-
-function operate(firstOperand, secondOperand, activeOperator) {
+function performOperation(firstOperand, secondOperand, activeOperator) {
   //Convert string values into numbers
   firstOperand = +firstOperand;
   secondOperand = +secondOperand;
 
-  //Check what's the active operator and call the related function
   switch (activeOperator) {
     case "divide":
       if (secondOperand === 0) {
+        //Prevent division by zero
         display.textContent = "lmao";
       } else {
         result = divide(firstOperand, secondOperand);
-        //If result has 10+ num, convert to scientific notation, if not return result
+
+        //Format result: use scientific notation if it's too long
         display.textContent =
           result.toString().length > 10 ? result.toExponential(4) : result;
       }
@@ -44,7 +46,7 @@ function operate(firstOperand, secondOperand, activeOperator) {
 
     case "multiply":
       result = multiply(firstOperand, secondOperand);
-      //If result has > 10 num display it in scientific notation, if not return result
+
       display.textContent =
         result.toString().length > 10 ? result.toExponential(4) : result;
       break;
@@ -75,160 +77,159 @@ function clearAll() {
   activeOperator = "";
 }
 
-const container = document.querySelector(".container");
-const display = document.querySelector(".display");
-const addBtn = document.querySelector(".add");
-
-//Take second operand from display, perform calculation, make result the first operand for next calculation with selected operator, also leave a flag that a calculation was performed.
-function handleSecondOperation() {
+// Handles operator chaining:
+// - Uses the current display as second operand
+// - Performs calculation
+// - Updates firstOperand with the result
+// - Updates the operator in the activeOperator variable
+// - Updates the display to show the current operator
+// - Flags that a calculation was just performed
+function handleChainedCalc(action, value) {
   secondOperand = display.textContent;
-  operate(firstOperand, secondOperand, activeOperator);
+  performOperation(firstOperand, secondOperand, activeOperator);
   firstOperand = display.textContent;
-  justCalculated = true;
+  activeOperator = action;
+  display.textContent += value;
+  clearOnNextInput = true;
 }
 
-container.addEventListener("click", handleClick);
+// Replaces the current operator if a new one is selected:
+// - Removes the previous operator from the display
+// - Updates firstOperand in case the number changed
+// - Sets and displays the new active operator
+function replaceOperator(action, value) {
+  display.textContent = display.textContent.slice(0, -1);
+  firstOperand = display.textContent;
+  activeOperator = action;
+  display.textContent += value;
+}
 
-//Check what was the clicked button inside container and do something about it
-function handleClick(e) {
-  //Find the closest button to the clicked element
+// Handles the first operator selection:
+// - Stores the current display as firstOperand
+// - Sets the active operator
+// - Displays the operator symbol
+// - Flags that a new number input should clear the screen
+function handleFirstOperator(action, value) {
+  firstOperand = display.textContent;
+  activeOperator = action;
+  display.textContent += value;
+  clearOnNextInput = true;
+}
+
+// Use event delegation to handle clicks on all calculator buttons
+container.addEventListener("click", handleClicks);
+
+function handleClicks(e) {
+  // Support clicks on nested elements (like SVGs) by finding the nearest button
   const clickedButton = e.target.closest("button");
   if (!clickedButton) return;
 
-  //Use previously set data-action and data-value in HTML
+  // Get button type and value from data attributes
   const action = clickedButton.dataset.action;
   const value = clickedButton.dataset.value;
 
   switch (action) {
     case "number":
-      //Clean display and write new input after calculation
-      if (display.textContent === "0" || justCalculated) {
+      // Replace display if starting fresh or after a calculation
+      if (display.textContent === "0" || clearOnNextInput) {
         display.textContent = "";
         display.textContent = value;
-        dotForbidden = false;
-        justCalculated = false;
-      } else {
-        //Stop listening if 10 numbers on display
-        if (display.textContent.length >= 10) {
-          display.removeEventListener("click", handleClick);
-        } else {
-          display.textContent += value;
-        }
+        clearOnNextInput = false;
+        //Take input if display has less than 10 digits
+      } else if (display.textContent.length < 10) {
+        display.textContent += value;
       }
       break;
 
     case "multiply":
-      // If there's a pending operation and the user enters a new number followed by another operator, calculate the result. Else just activate the operator and wait for second operand.
-      if (justCalculated && activeOperator != "") {
-        display.textContent = display.textContent.slice(0, -1);
-        firstOperand = display.textContent;
-        activeOperator = action;
-        display.textContent += e.target.textContent;
-      } else if (activeOperator != "") {
-        handleSecondOperation();
-        activeOperator = action;
-        display.textContent += e.target.textContent;
+      // Handle operator logic: replace, chain, or assign depending on current state
+      if (clearOnNextInput && activeOperator !== "") {
+        replaceOperator(action, value);
+      } else if (activeOperator !== "") {
+        handleChainedCalc(action, value);
       } else {
-        firstOperand = display.textContent;
-        activeOperator = action;
-        display.textContent += e.target.textContent;
-        justCalculated = true;
+        handleFirstOperator(action, value);
       }
       break;
 
     case "divide":
-      if (justCalculated && activeOperator != "") {
-        display.textContent = display.textContent.slice(0, -1);
-        firstOperand = display.textContent;
-        activeOperator = action;
-        display.textContent += e.target.textContent;
-      } else if (activeOperator != "") {
-        handleSecondOperation();
-        activeOperator = action;
-        display.textContent += e.target.textContent;
+      if (clearOnNextInput && activeOperator !== "") {
+        replaceOperator(action, value);
+      } else if (activeOperator !== "") {
+        handleChainedCalc(action, value);
       } else {
-        firstOperand = display.textContent;
-        activeOperator = action;
-        display.textContent += e.target.textContent;
-        justCalculated = true;
+        handleFirstOperator(action, value);
       }
       break;
 
     case "add":
-      if (justCalculated && activeOperator != "") {
-        display.textContent = display.textContent.slice(0, -1);
-        firstOperand = display.textContent;
-        activeOperator = action;
-        display.textContent += e.target.textContent;
-      } else if (activeOperator != "") {
-        handleSecondOperation();
-        activeOperator = action;
-        display.textContent += e.target.textContent;
+      if (clearOnNextInput && activeOperator !== "") {
+        replaceOperator(action, value);
+      } else if (activeOperator !== "") {
+        handleChainedCalc(action, value);
       } else {
-        firstOperand = display.textContent;
-        activeOperator = action;
-        display.textContent += e.target.textContent;
-        justCalculated = true;
+        handleFirstOperator(action, value);
       }
       break;
 
     case "subtract":
-      if (justCalculated && activeOperator != "") {
-        display.textContent = display.textContent.slice(0, -1);
-        firstOperand = display.textContent;
-        activeOperator = action;
-        display.textContent += e.target.textContent;
-      } else if (activeOperator != "") {
-        handleSecondOperation();
-        activeOperator = action;
-        display.textContent += e.target.textContent;
+      if (clearOnNextInput && activeOperator !== "") {
+        replaceOperator(action, value);
+      } else if (activeOperator !== "") {
+        handleChainedCalc(action, value);
       } else {
-        firstOperand = display.textContent;
-        activeOperator = action;
-        display.textContent += e.target.textContent;
-        justCalculated = true;
+        handleFirstOperator(action, value);
       }
       break;
 
     case "equal":
-      if (justCalculated) {
+      //Prevent re-calculating if result is already displayed
+      if (clearOnNextInput) {
         return;
       } else {
+        //Store current display as second operand and perform calculation
         secondOperand = display.textContent;
-        operate(firstOperand, secondOperand, activeOperator);
-        justCalculated = true;
+        performOperation(firstOperand, secondOperand, activeOperator);
+
+        // Set flag to clear display only if user starts typing a number (not an operator, dot or erase btn)
+        // This allows chaining operations or modifying the result without erasing it
+        clearOnNextInput = true;
       }
       break;
 
     case "percent":
-      if (justCalculated && activeOperator != "") {
+      if (clearOnNextInput && activeOperator !== "") {
         return;
       } else {
         result = percent(display.textContent);
-
+        //Format result: use scientific notation if it's too long
         display.textContent =
           result.toString().length > 10 ? result.toExponential(4) : result;
       }
       break;
 
     case "dot":
-      if (justCalculated && activeOperator != "") {
-        return
-      } else if (display.textContent.includes(".") || dotForbidden) {
+      // Prevent adding a dot if:
+      // 1) A calculation just finished and an operator is active (waiting for next input)
+      // 2) Or if there's already a dot on screen
+      if (
+        (clearOnNextInput && activeOperator !== "") ||
+        display.textContent.includes(".")
+      ) {
         return;
       } else {
-        justCalculated = false;
+        clearOnNextInput = false;
         display.textContent += value;
       }
       break;
 
     case "erase":
-      if (justCalculated) {
-        display.textContent = display.textContent.slice(0, -1);
+      // Remove the last character from the display
+      display.textContent = display.textContent.slice(0, -1);
+
+      if (clearOnNextInput) {
         activeOperator = "";
-        justCalculated = false;
-      } else {
-        display.textContent = display.textContent.slice(0, -1);
+        clearOnNextInput = false;
       }
       break;
 
@@ -238,8 +239,7 @@ function handleClick(e) {
       secondOperand = "";
       activeOperator = "";
       result = "";
-      justCalculated = false;
-      dotForbidden = false;
+      clearOnNextInput = false;
       break;
   }
 }
