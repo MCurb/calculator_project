@@ -139,6 +139,9 @@ function handleClicks(e) {
       }
       break;
 
+    case "add":
+    case "subtract":
+    case "divide":
     case "multiply":
       // Handle operator logic: replace, chain, or assign depending on current state
       if (clearOnNextInput && activeOperator !== "") {
@@ -149,37 +152,7 @@ function handleClicks(e) {
         handleFirstOperator(action, value);
       }
       break;
-
-    case "divide":
-      if (clearOnNextInput && activeOperator !== "") {
-        replaceOperator(action, value);
-      } else if (activeOperator !== "") {
-        handleChainedCalc(action, value);
-      } else {
-        handleFirstOperator(action, value);
-      }
-      break;
-
-    case "add":
-      if (clearOnNextInput && activeOperator !== "") {
-        replaceOperator(action, value);
-      } else if (activeOperator !== "") {
-        handleChainedCalc(action, value);
-      } else {
-        handleFirstOperator(action, value);
-      }
-      break;
-
-    case "subtract":
-      if (clearOnNextInput && activeOperator !== "") {
-        replaceOperator(action, value);
-      } else if (activeOperator !== "") {
-        handleChainedCalc(action, value);
-      } else {
-        handleFirstOperator(action, value);
-      }
-      break;
-
+      
     case "equal":
       //Prevent re-calculating if result is already displayed
       if (clearOnNextInput) {
