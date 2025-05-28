@@ -114,6 +114,13 @@ function handleFirstOperator(action, value) {
   clearOnNextInput = true;
 }
 
+// Replace display if starting fresh or after a calculation
+function replaceDisplay(value) {
+  display.textContent = "";
+  display.textContent = value;
+  clearOnNextInput = false;
+}
+
 // Use event delegation to handle clicks on all calculator buttons
 container.addEventListener("click", handleClicks);
 
@@ -130,9 +137,7 @@ function handleClicks(e) {
     case "number":
       // Replace display if starting fresh or after a calculation
       if (display.textContent === "0" || clearOnNextInput) {
-        display.textContent = "";
-        display.textContent = value;
-        clearOnNextInput = false;
+        replaceDisplay(value);
         //Take input if display has less than 10 digits
       } else if (display.textContent.length < 10) {
         display.textContent += value;
@@ -152,7 +157,6 @@ function handleClicks(e) {
         handleFirstOperator(action, value);
       }
       break;
-
 
     case "equal":
       //Prevent re-calculating if result is already displayed
@@ -186,12 +190,21 @@ function handleClicks(e) {
       // 2) Or if there's already a dot on screen
       if (
         (clearOnNextInput && activeOperator !== "") ||
-        display.textContent.includes(".") || display.textContent === ""
+        display.textContent.includes(".") ||
+        display.textContent === ""
       ) {
         return;
       } else {
         clearOnNextInput = false;
         display.textContent += value;
+      }
+      break;
+
+    case "plus/minus":
+      if (clearOnNextInput && activeOperator !== "") {
+        replaceDisplay(value)
+      } else {
+        display.textContent *= -1;
       }
       break;
 

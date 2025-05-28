@@ -73,10 +73,6 @@ button:active {
 
 /* More Specific Button Styles */
 
-.zeroBtn {
-    flex-grow: 1;
-}
-
 .erase svg {
     height: 30px;
     width: 30px;
