@@ -18,7 +18,8 @@ body {
     background-color: #1c1c1c;
     width: fit-content;
     border-radius: 12px;
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    box-shadow: 11px 13px 8px 0px rgba(0, 0, 0, 0.35), 11px 25px 25px 0px #454545, 11px 28px 40px 0px rgba(43, 43, 43, 0.973);
+    -webkit-box-shadow: 11px 13px 8px 0px rgba(0, 0, 0, 0.35), 11px 25px 25px 0px #454545, 11px 28px 40px 0px rgba(43, 43, 43, 0.973);
 }
 
 .display {
