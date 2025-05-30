@@ -61,7 +61,7 @@ function performOperation(firstOperand, secondOperand, activeOperator) {
     default:
       return;
   }
-  clearAll();
+  clear();
 }
 
 //Format result: use scientific notation if it's too long
@@ -69,10 +69,38 @@ function checkDisplayOverflow(result) {
   return result.toString().length > 10 ? result.toExponential(4) : result;
 }
 
-function clearAll() {
+function clear() {
   firstOperand = "";
   secondOperand = "";
   activeOperator = "";
+}
+
+function appendNumber(value) {
+  // Replace display if starting fresh or after a calculation
+      if (display.textContent === "0" || clearOnNextInput) {
+        replaceDisplay(value);
+        //Take input if display has less than 10 digits
+      } else if (display.textContent.length < 10) {
+        display.textContent += value;
+      }
+}
+
+// Replace display if starting fresh or after a calculation
+function replaceDisplay(value) {
+  display.textContent = "";
+  display.textContent = value;
+  clearOnNextInput = false;
+}
+
+function handleOperators(action, value) {
+  // Handle operator logic: replace, chain, or assign depending on current state
+      if (clearOnNextInput && activeOperator !== "") {
+        replaceOperator(action, value);
+      } else if (activeOperator !== "") {
+        handleChainedOperators(action, value);
+      } else {
+        handleFirstOperator(action, value);
+      }
 }
 
 // Handles operator chaining:
@@ -82,7 +110,7 @@ function clearAll() {
 // - Updates the operator in the activeOperator variable
 // - Updates the display to show the current operator
 // - Flags that a calculation was just performed
-function handleChainedCalc(action, value) {
+function handleChainedOperators(action, value) {
   secondOperand = display.textContent;
   performOperation(firstOperand, secondOperand, activeOperator);
   firstOperand = display.textContent;
@@ -114,52 +142,8 @@ function handleFirstOperator(action, value) {
   clearOnNextInput = true;
 }
 
-// Replace display if starting fresh or after a calculation
-function replaceDisplay(value) {
-  display.textContent = "";
-  display.textContent = value;
-  clearOnNextInput = false;
-}
-
-// Use event delegation to handle clicks on all calculator buttons
-container.addEventListener("click", handleClicks);
-
-function handleClicks(e) {
-  // Support clicks on nested elements (like SVGs) by finding the nearest button
-  const clickedButton = e.target.closest("button");
-  if (!clickedButton) return;
-
-  // Get button type and value from data attributes
-  const action = clickedButton.dataset.action;
-  const value = clickedButton.dataset.value;
-
-  switch (action) {
-    case "number":
-      // Replace display if starting fresh or after a calculation
-      if (display.textContent === "0" || clearOnNextInput) {
-        replaceDisplay(value);
-        //Take input if display has less than 10 digits
-      } else if (display.textContent.length < 10) {
-        display.textContent += value;
-      }
-      break;
-
-    case "add":
-    case "subtract":
-    case "divide":
-    case "multiply":
-      // Handle operator logic: replace, chain, or assign depending on current state
-      if (clearOnNextInput && activeOperator !== "") {
-        replaceOperator(action, value);
-      } else if (activeOperator !== "") {
-        handleChainedCalc(action, value);
-      } else {
-        handleFirstOperator(action, value);
-      }
-      break;
-
-    case "equal":
-      //Prevent re-calculating if result is already displayed
+function evaluateCalc() {
+  //Prevent re-calculating if result is already displayed
       if (clearOnNextInput) {
         return;
       } else {
@@ -171,6 +155,68 @@ function handleClicks(e) {
         // This allows chaining operations or modifying the result without erasing it
         clearOnNextInput = true;
       }
+}
+
+function appendDot(value) {
+  // Prevent adding a dot if:
+      // 1) A calculation just finished and an operator is active (waiting for next input)
+      // 2) Or if there's already a dot on screen
+      if (
+        (clearOnNextInput && activeOperator !== "") ||
+        display.textContent.includes(".") ||
+        display.textContent === ""
+      ) {
+        return;
+      } else {
+        clearOnNextInput = false;
+        display.textContent += value;
+      }
+}
+
+function eraseNumber() {
+  // Remove the last character from the display
+      display.textContent = display.textContent.slice(0, -1);
+
+      if (clearOnNextInput) {
+        activeOperator = "";
+        clearOnNextInput = false;
+      }
+}
+
+function clearAll() {
+  display.textContent = 0;
+      firstOperand = "";
+      secondOperand = "";
+      activeOperator = "";
+      result = "";
+      clearOnNextInput = false;
+}
+
+// Use event delegation to handle clicks on all calculator buttons
+container.addEventListener("click", handleClicks);
+function handleClicks(e) {
+  // Support clicks on nested elements (like SVGs) by finding the nearest button
+  const clickedButton = e.target.closest("button");
+  if (!clickedButton) return;
+
+  // Get button type and value from data attributes
+  const action = clickedButton.dataset.action;
+  const value = clickedButton.dataset.value;
+
+  switch (action) {
+    case "number":
+      appendNumber(value);
+      break;
+
+    case "add":
+    case "subtract":
+    case "divide":
+    case "multiply":
+      handleOperators(action, value);
+      break;
+
+    case "equal":
+      evaluateCalc();
       break;
 
     case "percent":
@@ -185,19 +231,7 @@ function handleClicks(e) {
       break;
 
     case "dot":
-      // Prevent adding a dot if:
-      // 1) A calculation just finished and an operator is active (waiting for next input)
-      // 2) Or if there's already a dot on screen
-      if (
-        (clearOnNextInput && activeOperator !== "") ||
-        display.textContent.includes(".") ||
-        display.textContent === ""
-      ) {
-        return;
-      } else {
-        clearOnNextInput = false;
-        display.textContent += value;
-      }
+      appendDot(value);
       break;
 
     case "plus/minus":
@@ -209,22 +243,52 @@ function handleClicks(e) {
       break;
 
     case "erase":
-      // Remove the last character from the display
-      display.textContent = display.textContent.slice(0, -1);
-
-      if (clearOnNextInput) {
-        activeOperator = "";
-        clearOnNextInput = false;
-      }
+      eraseNumber();
       break;
 
     case "all-clear":
-      display.textContent = 0;
-      firstOperand = "";
-      secondOperand = "";
-      activeOperator = "";
-      result = "";
-      clearOnNextInput = false;
+      clearAll();
       break;
+  }
+}
+
+// Keyboard Support
+container.addEventListener("keydown", handleKey);
+function handleKey(e) {
+if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') {
+ convertOperator(e.key);
+} else if (e.key >= 0 && e.key <= 9) {
+  appendNumber(e.key);
+} else if (e.key === '.') {
+  appendDot(e.key);
+} else if (e.key === '=' || e.key === 'Enter') {
+  evaluateCalc();
+} else if (e.key === 'Backspace') {
+  eraseNumber();
+} else if (e.key === 'Escape') {
+  clearAll();
+}
+}
+
+function convertOperator(keyboardOperator) {
+  if (keyboardOperator === '/') {
+    action = "divide";
+    value = "÷"
+    handleOperators(action, value);
+  }
+  if (keyboardOperator === '*') {
+    action = "multiply";
+    value = "⨯";
+    handleOperators(action, value);
+  }
+  if (keyboardOperator === '-') {
+    action = "subtract";
+    value = "–"
+    handleOperators(action, value);
+  }
+  if (keyboardOperator === '+') {
+    action = "add";
+    value = "+"
+    handleOperators(action, value);
   }
 }
